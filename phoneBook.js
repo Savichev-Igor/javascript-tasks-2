@@ -88,7 +88,6 @@ module.exports.remove = function remove(query) {
 module.exports.importFromCsv = function importFromCsv(filename) {
     var data = require('fs').readFileSync(filename, 'utf-8');
     data =  data.split('\n');
-    console.log(data);
     var params = new Array();
     for (var i = 0; i < data.length; i++){
      params = data[i].split(';');
