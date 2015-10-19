@@ -35,6 +35,8 @@ module.exports.add = function add(name, phone, email) {
     }
 };
 
+var addFunc = module.exports.add
+
 /**
  * Функция получает из словарного значения одну строку для одной записи
  * @param {string} key
@@ -54,23 +56,14 @@ function getOneLine(key) {
 */
 module.exports.find = function find(query) {
     for (var key in phoneBook) {
-        if (query === 'undefined') {
+        if (typeof query === 'undefined') {
             console.log(getOneLine(key));
             continue;
         }
-        if (phoneBook[key]['name'].indexOf(query) != -1) {
+        if (phoneBook[key]['name'].indexOf(query) != -1 || phoneBook[key]['phone'].indexOf(query) != -1 || phoneBook[key]['email'].indexOf(query) != -1) {
             console.log(getOneLine(key));
             continue;
         }
-        if (phoneBook[key]['phone'].indexOf(query) != -1) {
-            console.log(getOneLine(key));
-            continue;
-        }
-        if (phoneBook[key]['email'].indexOf(query) != -1) {
-            console.log(getOneLine(key));
-            continue;
-        }
-
     }
 };
 
@@ -79,16 +72,17 @@ module.exports.find = function find(query) {
  * @param {string} query
 */
 module.exports.remove = function remove(query) {
-    if (query) {
-        var counter = 0;
-        for (var key in phoneBook) {
-            if (key.indexOf(query) != -1) {
-                delete phoneBook[key];
-                counter += 1;
-            }
-        }
-        console.log('Удалено контактов: ' + counter.toString());
+    if (!query){
+        return;
     }
+    var counter = 0;
+    for (var key in phoneBook) {
+        if (phoneBook[key]['name'].indexOf(query) != -1 || phoneBook[key]['phone'].indexOf(query) != -1 || phoneBook[key]['email'].indexOf(query) != -1) {
+            delete phoneBook[key];
+            counter += 1;
+        }
+    }
+    console.log('Удалено контактов: ' + counter.toString());
 };
 
 /**
@@ -101,7 +95,7 @@ module.exports.importFromCsv = function importFromCsv(filename) {
     var params = new Array();
     for (var i = 0; i < data.length; i++) {
         params = data[i].split(';');
-        module.exports.add(params[0], params[1], params[2]);
+        addFunc(params[0], params[1], params[2]);
     }
 };
 
@@ -147,10 +141,10 @@ module.exports.showTable = function showTable() {
     var secondLine = '│';
     var thirdLine = '├';
     var lastLine = '└';
-    var all_len = maxLenName + maxLenPhone + maxLenEmail;
+    var allLen = maxLenName + maxLenPhone + maxLenEmail;
     var separator_1 = maxLenName;
     var separator_2 = maxLenName + maxLenPhone;
-    for (var i = 0; i < all_len; i++) {
+    for (var i = 0; i < allLen; i++) {
         firstLine += '-';
         thirdLine += '-';
         lastLine += '-';
@@ -164,7 +158,7 @@ module.exports.showTable = function showTable() {
             thirdLine += '╫';
             lastLine += '╨';
         }
-        if (i == all_len - 1) {
+        if (i == allLen - 1) {
             firstLine += '┐';
             thirdLine += '┤';
             lastLine += '┘';
